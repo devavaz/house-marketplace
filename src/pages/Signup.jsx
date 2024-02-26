@@ -3,6 +3,21 @@ import { Link, useNavigate } from "react-router-dom";
 import { ReactComponent as ArrowRightIcon } from "../assets/svg/keyboardArrowRightIcon.svg";
 import visibilityIcon from "../assets/svg/visibilityIcon.svg";
 
+
+
+// FIREBASE
+
+
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+} from 'firebase/auth'
+
+
+import { db } from '../firebase.config'
+
+
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -23,6 +38,30 @@ const Signup = () => {
      
   };
 
+
+
+
+  const onSubmit = async (e) => {
+   e.preventDefault()
+
+
+   try {
+    const auth = getAuth()
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+
+    const user = userCredential.user
+
+    updateProfile(auth.currentUser, {
+      displayName: name
+    })
+
+    navigate('/')
+
+   } catch (error) {
+    
+   }
+  }
+
   return (
     <>
       <div className="pageContainer">
@@ -30,7 +69,7 @@ const Signup = () => {
           <p className="pageHeader">Welcome back!</p>
         </header>
 
-        <form>
+        <form onSubmit={onSubmit}>
         <input
             type="text"
             className="nameInput"
